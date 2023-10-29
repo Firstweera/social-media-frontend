@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link, useNavigate } from "react-router-dom";
+import { SearchBar } from ".";
 
 interface INav {
   isAuthen: boolean;
@@ -30,11 +31,15 @@ export const Nav = ({ isAuthen }: INav) => {
     <div className="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50">
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Link to={isAuthen === true ? "/main" : "/"}>
+          <Link to={isAuthen ? "/main" : "/"}>
             <Box>Social-Media</Box>
           </Link>
 
-          
+          {isAuthen && (
+            <Flex>
+              <SearchBar />
+            </Flex>
+          )}
 
           <Flex alignItems="center">
             <Stack direction="row" spacing={7}>
@@ -67,9 +72,20 @@ export const Nav = ({ isAuthen }: INav) => {
                 </>
               ) : (
                 <>
+                  <Link to="/profile">
+                    <Button
+                      // as={"a"}
+                      fontSize={"lg"}
+                      fontWeight={600}
+                      variant={"link"}
+                      className="tw-mt-2"
+                    >
+                      Profile
+                    </Button>
+                  </Link>
                   <Link to="/main">
                     <Button
-                      as={"a"}
+                      // as={"a"}
                       fontSize={"lg"}
                       fontWeight={600}
                       variant={"link"}

@@ -9,14 +9,13 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Link,
   FormErrorMessage,
   useToast,
 } from "@chakra-ui/react";
 import { fetchAuthentication, useSignIn } from "../hooks";
 import { ILoginData } from "../interfaces";
 import { Formik, Form, Field } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface ILoginPage {
   setIsAuthen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -170,7 +169,7 @@ export const SignInCard = ({ setIsAuthen }: ILoginPage) => {
             <Stack align={"center"}>
               <Flex minWidth="max-content" alignItems="center" gap="2">
                 <Text color={"gray.600"}>Not a member?</Text>
-                <Link color={"blue.400"} href="/register">
+                <Link color={"blue.400"} to="/register">
                   <Text color={"blue.400"}>Sign up now</Text>
                 </Link>
               </Flex>

@@ -6,7 +6,7 @@ import {
   Outlet,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Home, MainFeed, SignInCard, SignUpCard } from "./pages";
+import { Home, MainFeed, ProfilePage, SignInCard, SignUpCard } from "./pages";
 import { Nav } from "./components";
 import { useEffect, useState } from "react";
 import { checkAuthentication } from "./hooks";
@@ -50,7 +50,8 @@ function App() {
                 <ProtectedRoute isAuthen={isAuthen} redirectPath={"/"} />
               }
             >
-              <Route path="/Main" element={<MainFeed />} />
+              <Route path="/main" element={<MainFeed />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
             <Route path="*" element={<>404: Page not found</>} />
           </Routes>
