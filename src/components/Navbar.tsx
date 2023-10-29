@@ -16,93 +16,74 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
-
-// interface Props {
-//   children: React.ReactNode;
-// }
-
-// const NavLink = (props: Props) => {
-//   const { children } = props;
-
-//   return (
-//     <Box
-//       as="a"
-//       px={2}
-//       py={1}
-//       rounded={"md"}
-//       _hover={{
-//         textDecoration: "none",
-//         bg: useColorModeValue("gray.200", "gray.700"),
-//       }}
-//       href={"#"}
-//     >
-//       {children}
-//     </Box>
-//   );
-// };
+import { Link, useNavigate } from "react-router-dom";
 
 interface INav {
-  isAuthenticated: boolean;
+  isAuthen: boolean;
 }
 
-export const Nav = ({ isAuthenticated }: INav) => {
+export const Nav = ({ isAuthen }: INav) => {
   const { colorMode, toggleColorMode } = useColorMode();
-  // const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
 
   return (
     <div className="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50">
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Link to={isAuthenticated ? "/main" : "/"}>
+          <Link to={isAuthen === true ? "/main" : "/"}>
             <Box>Social-Media</Box>
           </Link>
 
+          
+
           <Flex alignItems="center">
-            <Stack direction="row" spacing={7} align="stretch">
-              {!isAuthenticated ? (
+            <Stack direction="row" spacing={7}>
+              {!isAuthen ? (
                 <>
-                  <Button
-                    as={"a"}
-                    fontSize={"sm"}
-                    fontWeight={400}
-                    variant={"link"}
-                    href={"/login"}
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    as={"a"}
-                    display={{ base: "none", md: "inline-flex" }}
-                    fontSize={"sm"}
-                    fontWeight={600}
-                    color={"white"}
-                    bg={"blue.400"}
-                    href={"/register"}
-                    _hover={{
-                      bg: "blue.500",
-                    }}
-                  >
-                    Sign Up
-                  </Button>
+                  <Link to={"/login"}>
+                    <Button
+                      fontSize={"sm"}
+                      fontWeight={400}
+                      variant={"link"}
+                      className="tw-mt-3"
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link to={"/register"}>
+                    <Button
+                      display={{ base: "none", md: "inline-flex" }}
+                      fontSize={"sm"}
+                      fontWeight={600}
+                      color={"white"}
+                      bg={"blue.400"}
+                      _hover={{
+                        bg: "blue.500",
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                  </Link>
                 </>
               ) : (
                 <>
-                  <Button
-                    as={"a"}
-                    fontSize={"lg"}
-                    fontWeight={600}
-                    variant={"link"}
-                    href={"/main"}
-                  >
-                    Main
-                  </Button>
+                  <Link to="/main">
+                    <Button
+                      as={"a"}
+                      fontSize={"lg"}
+                      fontWeight={600}
+                      variant={"link"}
+                      className="tw-mt-2"
+                    >
+                      Main
+                    </Button>
+                  </Link>
                   <Button onClick={toggleColorMode}>
                     {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
                   </Button>
                 </>
               )}
-              {isAuthenticated && (
+              {isAuthen && (
                 <>
                   <Menu>
                     <MenuButton
@@ -137,7 +118,15 @@ export const Nav = ({ isAuthenticated }: INav) => {
                       <MenuDivider />
                       <MenuItem>Your Servers</MenuItem>
                       <MenuItem>Account Settings</MenuItem>
-                      <MenuItem>Logout</MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          localStorage.removeItem("token");
+                          localStorage.removeItem("userInfo");
+                          navigate("/");
+                        }}
+                      >
+                        Logout
+                      </MenuItem>
                     </MenuList>
                   </Menu>
                 </>

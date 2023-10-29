@@ -11,17 +11,21 @@ import {
   useColorModeValue,
   Link,
   FormErrorMessage,
-  Alert,
-  AlertIcon,
+  useToast,
 } from "@chakra-ui/react";
-import { useSignIn } from "../hooks";
+import { fetchAuthentication, useSignIn } from "../hooks";
 import { ILoginData } from "../interfaces";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 
-export const SignInCard = () => {
-  const { mutate: login } = useSignIn();
-  const navigateTo = useNavigate();
+interface ILoginPage {
+  setIsAuthen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const SignInCard = ({ setIsAuthen }: ILoginPage) => {
+  const signInMutation = useSignIn();
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const validateEmail = (value: string) => {
     let error;
@@ -43,6 +47,45 @@ export const SignInCard = () => {
     return error;
   };
 
+  const handleSubmit = async (
+    values: ILoginData,
+    actions: { setSubmitting: (arg0: boolean) => void }
+  ) => {
+    try {
+      const { data } = await signInMutation.mutateAsync(values);
+
+      if (data?.status === "ok") {
+        localStorage.setItem("token", data?.token);
+        const authCheck = await fetchAuthentication();
+        if (authCheck) {
+          localStorage.setItem(
+            "userInfo",
+            JSON.stringify(authCheck?.data.result)
+          );
+          setIsAuthen(true);
+          navigate("/main");
+        } else {
+          console.log("Unsuccessfully authenticated");
+          setIsAuthen(false);
+          localStorage.removeItem("token");
+          navigate("/");
+        }
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        position: "top-right",
+        title: "Login failed!",
+        description: "Please check there is an incorrect email or password.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      actions.setSubmitting(false);
+    }
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -62,28 +105,7 @@ export const SignInCard = () => {
         >
           <Formik
             initialValues={{ email: "", password: "" }}
-            onSubmit={(
-              values: ILoginData,
-              actions: { setSubmitting: (arg0: boolean) => void }
-            ) => {
-              setTimeout(() => {
-                login(values, {
-                  onSuccess: (data: { status: string; token: string }) => {
-                    if (data?.status === "ok") {
-                      localStorage.setItem("token", data?.token);
-                      navigateTo("/main");
-                    }
-                  },
-                  onError: (err: any) => {
-                    <Alert status="warning">
-                      <AlertIcon />
-                      {err}
-                    </Alert>;
-                  },
-                });
-                actions.setSubmitting(false);
-              }, 1000);
-            }}
+            onSubmit={handleSubmit}
           >
             {(props: { isSubmitting: boolean | undefined }) => (
               <Form>
@@ -117,14 +139,30 @@ export const SignInCard = () => {
                     </FormControl>
                   )}
                 </Field>
-                <Button
-                  mt={4}
-                  colorScheme="teal"
-                  isLoading={props.isSubmitting}
-                  type="submit"
-                >
-                  Submit
-                </Button>
+                <Stack spacing={10}>
+                  {/* <Stack
+                    direction={{ base: "column", sm: "row" }}
+                    align={"start"}
+                    justify={"space-between"}
+                  >
+                    <Checkbox>Remember me</Checkbox>
+                    <Text color={"blue.400"}>Forgot password?</Text>
+                  </Stack> */}
+                  <Button
+                    mt={4}
+                    isLoading={props.isSubmitting}
+                    type="submit"
+                    loadingText="Submitting"
+                    size="lg"
+                    bg={"blue.400"}
+                    color={"white"}
+                    _hover={{
+                      bg: "blue.500",
+                    }}
+                  >
+                    Sign in
+                  </Button>
+                </Stack>
               </Form>
             )}
           </Formik>

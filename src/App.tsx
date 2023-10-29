@@ -1,40 +1,61 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Home, MainFeed, SignInCard, SignUpCard } from "./pages";
 import { Nav } from "./components";
 import { useEffect, useState } from "react";
+import { checkAuthentication } from "./hooks";
+
+const ProtectedRoute = ({
+  isAuthen,
+  redirectPath = "/",
+}: {
+  isAuthen: boolean;
+  redirectPath: string;
+}) => {
+  if (!isAuthen) {
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return <Outlet />;
+};
 
 function App() {
   const queryClient = new QueryClient();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthen, setIsAuthen] = useState(false);
 
   useEffect(() => {
-    const currentPath = window.location.pathname.split("/")[1];
-    console.log("currentPath:", currentPath, typeof currentPath);
-    setIsAuthenticated(
-      currentPath !== undefined &&
-        currentPath !== "" &&
-        currentPath !== "login" &&
-        currentPath !== "register"
-    );
-
-    console.log("isAuthenticated", isAuthenticated);
+    checkAuthentication(setIsAuthen);
   }, []);
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Nav isAuthenticated={isAuthenticated} />
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <Nav isAuthen={isAuthen} />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<SignUpCard />} />
-            <Route path="/login" element={<SignInCard />} />
-            <Route path="/Main" element={<MainFeed />} />
-            <Route path="*" element={<>404 Not found</>} />
+            <Route
+              path="/login"
+              element={<SignInCard setIsAuthen={setIsAuthen} />}
+            />
+            <Route
+              element={
+                <ProtectedRoute isAuthen={isAuthen} redirectPath={"/"} />
+              }
+            >
+              <Route path="/Main" element={<MainFeed />} />
+            </Route>
+            <Route path="*" element={<>404: Page not found</>} />
           </Routes>
-        </BrowserRouter>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
     </>
   );
 }
