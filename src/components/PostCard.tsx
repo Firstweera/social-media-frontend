@@ -11,24 +11,53 @@ import {
   // Textarea,
   Input,
   Divider,
+  Flex,
+  Menu,
+  MenuButton,
+  IconButton,
+  MenuList,
+  MenuItem,
+  Textarea,
+  HStack,
+  ModalOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdOutlineCreate } from "react-icons/md";
-import { useCreateComment } from "../hooks";
+import {
+  useCreateComment,
+  useLikePost,
+  useUnLikePost,
+  useUpdatePost,
+} from "../hooks";
 import {
   QueryObserverResult,
   RefetchOptions,
   RefetchQueryFilters,
 } from "react-query";
+import { DeleteIcon, EditIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { ModalWarning } from ".";
+import React from "react";
 
 interface IPostCard {
   post?: any;
-  refetchPost?: <TPageData>(
+  refetchPostUser?: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<any, unknown>>;
+  refetchPostFollow?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<any, unknown>>;
 }
 
-export const PostCard = ({ post, refetchPost }: IPostCard) => {
+export const PostCard = ({
+  post,
+  refetchPostUser,
+  refetchPostFollow,
+}: IPostCard) => {
+  const createCommentMutation = useCreateComment();
+  const updatePostMutation = useUpdatePost();
+  const likePostMutation = useLikePost();
+  const unLikePostMutation = useUnLikePost();
   const localISOString = dayjs(post?.updatedAt).format("MMM DD, YYYY · HH:mm");
   const userInfo = JSON.parse(localStorage.getItem("userInfo") ?? "");
   const [toggleComment, setToggleComment] = useState<boolean>();
@@ -36,13 +65,67 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
     postId: post?.id,
     message: "",
   });
-  const createCommentMutation = useCreateComment();
+  const [toggleEdit, setToggleEdit] = useState<boolean>(false);
+  const [messageInPost, setMessageInPost] = useState<string>(post?.message);
+  const OverlayOne = () => (
+    <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+  );
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [overlay, setOverlay] = React.useState(<OverlayOne />);
+  // const [loadingLike, setLoadingLike] = useState<boolean>(false);
+
+  const handleUpdatePost = async () => {
+    if (messageInPost) {
+      await updatePostMutation.mutateAsync({
+        postId: post.id,
+        message: messageInPost,
+      });
+      setMessageInPost(messageInPost);
+      setToggleEdit(false);
+      refetchPostUser && refetchPostUser();
+      refetchPostFollow && refetchPostFollow();
+    }
+  };
 
   const handleCreateComment = async () => {
     if (commentData) {
       await createCommentMutation.mutateAsync(commentData);
       setCommentData({ postId: null, message: "" });
-      refetchPost && refetchPost();
+      refetchPostUser && refetchPostUser();
+      refetchPostFollow && refetchPostFollow();
+    }
+  };
+
+  const handleLikePost = async (postId: number, type: string) => {
+    // setLoadingLike(true);
+    try {
+      if (type === "like") {
+        const result = await likePostMutation.mutateAsync({ postId });
+        if (result.status === "ok") {
+          refetchPostUser && refetchPostUser();
+          refetchPostFollow && refetchPostFollow();
+          // setTimeout(() => {
+          //   setLoadingLike(false);
+          // }, 500);
+          console.log("Liked post:", result);
+        }
+      } else if (type === "unLike") {
+        const result = await unLikePostMutation.mutateAsync({ postId });
+        if (result.status === "ok") {
+          refetchPostUser && refetchPostUser();
+          refetchPostFollow && refetchPostFollow();
+          // setTimeout(() => {
+          //   setLoadingLike(false);
+          // }, 500);
+          console.log("UnLiked post:", result);
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -52,6 +135,15 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
   return (
     <>
       <Center py={3}>
+        <ModalWarning
+          isOpen={isOpen}
+          onClose={onClose}
+          overlay={overlay}
+          postId={post?.id}
+          refetchPostUser={refetchPostUser}
+          refetchPostFollow={refetchPostFollow}
+        />
+
         <Box
           maxW={"1200px"}
           w={"full"}
@@ -62,19 +154,76 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
           overflow={"hidden"}
         >
           <Stack>
-            <Stack mt={6} direction={"row"} spacing={4} align={"center"}>
-              <Avatar
-                src={"https://avatars0.githubusercontent.com/u/1164541?v=4"}
-              />
-              <Stack direction={"column"} spacing={0} fontSize={"sm"}>
-                <Text fontWeight={600}>
-                  {post?.user.fname} {post?.user.lname}
-                </Text>
-                <Text color={"gray.500"}>{localISOString}</Text>
+            <Flex justifyContent={"space-between"}>
+              <Stack mt={6} direction={"row"} spacing={4} align={"center"}>
+                <Avatar
+                  src={"https://avatars0.githubusercontent.com/u/1164541?v=4"}
+                />
+                <Stack direction={"column"} spacing={0} fontSize={"sm"}>
+                  <Text fontWeight={600}>
+                    {post?.user.fname} {post?.user.lname}
+                  </Text>
+                  <Text color={"gray.500"}>{localISOString}</Text>
+                </Stack>
               </Stack>
-            </Stack>
+
+              {post?.userId === userInfo?.userId && (
+                <Menu>
+                  <MenuButton
+                    as={IconButton}
+                    aria-label="Options"
+                    icon={<HamburgerIcon />}
+                    variant="outline"
+                  />
+                  <MenuList>
+                    <MenuItem
+                      icon={<EditIcon />}
+                      onClick={
+                        () => setToggleEdit(!toggleEdit)
+                        // handleEditClick(post?.id, post?.message)
+                      }
+                    >
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      icon={<DeleteIcon />}
+                      onClick={() => {
+                        setOverlay(<OverlayOne />);
+                        onOpen();
+                      }}
+                    >
+                      Delete
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              )}
+            </Flex>
             <div className="tw-w-[300px] sm:tw-w-[500px] md:tw-w-[600px] lg:tw-w-[1000px]">
-              <Text color={"gray.500"}>{post?.message}</Text>
+              {toggleEdit ? (
+                <>
+                  <Textarea
+                    value={messageInPost}
+                    color={"gray.500"}
+                    onChange={(e) => setMessageInPost(e.target.value)}
+                  />
+                  <HStack justify={"end"}>
+                    <Button
+                      size="sm"
+                      mt={2}
+                      // variant="ghost"
+                      leftIcon={<MdOutlineCreate />}
+                      onClick={() => handleUpdatePost()}
+                      // isDisabled={message.length === 0}
+                    >
+                      Edit Post
+                    </Button>
+                  </HStack>
+                </>
+              ) : (
+                <>
+                  <Text color={"gray.500"}>{messageInPost}</Text>
+                </>
+              )}
             </div>
             <Stack mt={6} direction={"row"} spacing={4} align={"center"}>
               {post?.likes.filter(
@@ -85,15 +234,9 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
                     size="sm"
                     flex="1"
                     variant="ghost"
-                    leftIcon={
-                      //   post?.likes.filter(
-                      //     (item: any) => item.userId === userInfo.userId
-                      //   ).length === 1 ? (
-                      <BiSolidLike />
-                      //   ) : (
-                      // <BiLike />
-                      //   )
-                    }
+                    // isLoading={loadingLike}
+                    onClick={() => handleLikePost(post?.id, "unLike")}
+                    leftIcon={<BiSolidLike />}
                   >
                     Like ({post?.likes.length})
                   </Button>
@@ -104,36 +247,14 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
                     size="sm"
                     flex="1"
                     variant="ghost"
-                    leftIcon={
-                      // post?.likes.filter(
-                      //   (item: any) => item.userId === userInfo.userId
-                      // ).length === 1 ? (
-                      //   <BiSolidLike />
-                      // ) : (
-                      <BiLike />
-                      // )
-                    }
+                    // isLoading={loadingLike}
+                    onClick={() => handleLikePost(post?.id, "like")}
+                    leftIcon={<BiLike />}
                   >
                     Like ({post?.likes.length})
                   </Button>
                 </>
               )}
-              {/* <Button
-                size="sm"
-                flex="1"
-                variant="ghost"
-                leftIcon={
-                  post?.likes.filter(
-                    (item: any) => item.userId === userInfo.userId
-                  ).length === 1 ? (
-                    <BiSolidLike />
-                  ) : (
-                    <BiLike />
-                  )
-                }
-              >
-                Like
-              </Button> */}
               <Button
                 size="sm"
                 flex="1"

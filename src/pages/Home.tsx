@@ -6,8 +6,20 @@ import {
   VStack,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../App";
 
 export const Home = () => {
+  const { isAuthen } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthen) {
+      navigate("/main");
+    }
+  }, [window.location.pathname]);
+
   return (
     <Flex
       w={"full"}

@@ -20,12 +20,15 @@ import {
 } from "react-query";
 
 interface ICreatePost {
-  refetchPost: <TPageData>(
+  refetchPostUser: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<any, unknown>>;
+  refetchPostFollow: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<any, unknown>>;
 }
 
-export const CreatePost = ({ refetchPost }: ICreatePost) => {
+export const CreatePost = ({ refetchPostUser, refetchPostFollow }: ICreatePost) => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") ?? "");
   const [message, setMessage] = useState<string>("");
   const createPostMutation = useCreatePost();
@@ -34,7 +37,8 @@ export const CreatePost = ({ refetchPost }: ICreatePost) => {
     if (message) {
       await createPostMutation.mutateAsync(message);
       setMessage("");
-      refetchPost();
+      refetchPostUser();
+      refetchPostFollow();
     }
   };
 

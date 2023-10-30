@@ -29,26 +29,6 @@ export const SignInCard = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const validateEmail = (value: string) => {
-    let error;
-    if (!value) {
-      error = "Email is required";
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
-      error = "Invalid email address";
-    }
-    return error;
-  };
-
-  const validatePassword = (value: string) => {
-    let error;
-    if (!value) {
-      error = "Password is required";
-    } else if (value.length < 8) {
-      error = "Password must be at least 8 characters";
-    }
-    return error;
-  };
-
   const handleSubmit = async (
     values: ILoginData,
     actions: { setSubmitting: (arg0: boolean) => void }
@@ -86,6 +66,26 @@ export const SignInCard = () => {
     } finally {
       actions.setSubmitting(false);
     }
+  };
+
+  const validateEmail = (value: string) => {
+    let error;
+    if (!value) {
+      error = "Email is required";
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
+      error = "Invalid email address";
+    }
+    return error;
+  };
+
+  const validatePassword = (value: string) => {
+    let error;
+    if (!value) {
+      error = "Password is required";
+    } else if (value.length < 8) {
+      error = "Password must be at least 8 characters";
+    }
+    return error;
   };
 
   return (

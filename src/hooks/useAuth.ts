@@ -1,4 +1,6 @@
 import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
 export const fetchAuthentication = async () => {
   const token = localStorage.getItem("token");
@@ -24,7 +26,9 @@ export const fetchAuthentication = async () => {
   }
 };
 
-export async function checkAuthentication(setIsAuthen: (arg0: boolean) => void) {
+export const checkAuthentication = async () => {
+  const { setIsAuthen } = useContext(AuthContext);
+
   try {
     const authCheck = await fetchAuthentication();
 
@@ -40,4 +44,4 @@ export async function checkAuthentication(setIsAuthen: (arg0: boolean) => void) 
     console.error("API error:", error);
     setIsAuthen(false);
   }
-}
+};
