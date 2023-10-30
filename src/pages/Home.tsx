@@ -8,14 +8,14 @@ import {
 } from "@chakra-ui/react";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../App";
+import { UserContext } from "../App";
 
 export const Home = () => {
-  const { isAuthen } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthen) {
+    if (user?.isAuthen) {
       navigate("/main");
     }
   }, [window.location.pathname]);

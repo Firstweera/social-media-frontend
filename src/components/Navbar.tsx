@@ -18,10 +18,12 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { SearchBar } from ".";
-import { AuthContext } from "../App";
+import { UserContext } from "../App";
 
 export const Nav = () => {
-  const { isAuthen, setIsAuthen } = useContext(AuthContext);
+  const { user, setUser } = useContext(UserContext);
+  const userInfoString = localStorage.getItem("userInfo");
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
 
@@ -29,11 +31,11 @@ export const Nav = () => {
     <div className="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50">
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
         <Flex h={16} alignItems="center" justifyContent="space-between">
-          <Link to={isAuthen ? "/main" : "/"}>
+          <Link to={user?.isAuthen ? "/main" : "/"}>
             <Box>Social-Media</Box>
           </Link>
 
-          {isAuthen && (
+          {user?.isAuthen && (
             <Flex>
               <SearchBar />
             </Flex>
@@ -41,7 +43,7 @@ export const Nav = () => {
 
           <Flex alignItems="center">
             <Stack direction="row" spacing={7}>
-              {!isAuthen ? (
+              {!user?.isAuthen ? (
                 <>
                   <Link to="/login">
                     <Button
@@ -76,6 +78,15 @@ export const Nav = () => {
                       fontWeight={600}
                       variant="link"
                       mt={2}
+                      onClick={() => {
+                        setUser({
+                          isAuthen: user?.isAuthen,
+                          profileMode: {
+                            mode: "myProfile",
+                            userId: userInfo?.userId,
+                          },
+                        });
+                      }}
                     >
                       Profile
                     </Button>
@@ -96,7 +107,7 @@ export const Nav = () => {
                 </>
               )}
 
-              {isAuthen && (
+              {user?.isAuthen && (
                 <Menu>
                   <MenuButton
                     as={Button}
@@ -107,18 +118,26 @@ export const Nav = () => {
                   >
                     <Avatar
                       size="sm"
-                      src="https://avatars.dicebear.com/api/male/username.svg"
+                      name="userAvatar"
+                      src={
+                        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                      }
                     />
                   </MenuButton>
                   <MenuList alignItems="center">
                     <Center>
                       <Avatar
-                        size="2xl"
-                        src="https://avatars.dicebear.com/api/male/username.svg"
+                        size="xl"
+                        name="userAvatar"
+                        src={
+                          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                        }
                       />
                     </Center>
                     <Center>
-                      <Text>Username</Text>
+                      <Text>
+                        {userInfo?.firstName} {userInfo?.lastName}
+                      </Text>
                     </Center>
                     <MenuDivider />
                     <MenuItem>Your Servers</MenuItem>
@@ -143,7 +162,13 @@ export const Nav = () => {
                             );
                         });
 
-                        setIsAuthen(false);
+                        setUser({
+                          isAuthen: false,
+                          profileMode: {
+                            mode: "myProfile",
+                            userId: userInfo?.userId || 0,
+                          },
+                        });
                         navigate("/");
                       }}
                     >

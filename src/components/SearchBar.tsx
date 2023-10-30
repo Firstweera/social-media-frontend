@@ -1,7 +1,9 @@
 import axios from "axios";
 import { Search } from "chakra-ui-search";
-import { useEffect, useState } from "react";
-import { ChangeEvent } from "react"; // Import ChangeEvent
+import { useContext, useEffect, useState } from "react";
+import { ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
 
 interface ISearchResult {
   id: number;
@@ -10,15 +12,16 @@ interface ISearchResult {
 }
 
 export const SearchBar: React.FC = () => {
+  const { setUser } = useContext(UserContext);
   const [value, setValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [results, setResults] = useState<ISearchResult[]>([]);
+  const navigate = useNavigate();
 
   const onValueChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setValue(newValue); // Update the input value
-    setIsLoading(true); // Set loading to true while fetching data
-
+    setValue(newValue);
+    setIsLoading(true);
     try {
       if (newValue.length > 2) {
         const response = await axios.post(
@@ -34,21 +37,32 @@ export const SearchBar: React.FC = () => {
           }
         );
 
-        // Assuming the API returns an array of search results
         setResults(response.data.data as ISearchResult[]);
       } else {
-        setResults([]); // Clear results if the search input is less than 4 characters
+        setResults([]);
       }
     } catch (error) {
       console.error("Error searching for users:", error);
     } finally {
-      setIsLoading(false); // Set loading to false after fetching data
+      setIsLoading(false);
     }
   };
 
-  const handleResultSelect = (selectedResult: any) => {
-    // Implement your logic for handling the selected result here
+  const handleResultSelect = (selectedResult: {
+    fname: string;
+    id: number;
+    lname: string;
+  }) => {
     console.log("Selected Result:", selectedResult);
+
+    setUser({
+      isAuthen: true,
+      profileMode: {
+        mode: "friendProfile",
+        userId: selectedResult?.id,
+      },
+    });
+    navigate("/profile");
   };
 
   const renderResult = (friend: ISearchResult) => {
@@ -81,7 +95,6 @@ type SearchResultProps = {
 };
 
 const SearchResult: React.FC<SearchResultProps> = ({ friend }) => {
-  // Render the search result as you want
   return (
     <div key={friend?.id}>
       <p>

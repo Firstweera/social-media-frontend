@@ -17,14 +17,16 @@ import { ILoginData } from "../interfaces";
 import { Formik, Form, Field } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../App";
+import { UserContext } from "../App";
 
 // interface ILoginPage {
 //   setIsAuthen: React.Dispatch<React.SetStateAction<boolean>>;
 // }
 
 export const SignInCard = () => {
-  const { setIsAuthen } = useContext(AuthContext);
+  const { setUser } = useContext(UserContext);
+  const userInfoString = localStorage.getItem("userInfo");
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
   const signInMutation = useSignIn();
   const navigate = useNavigate();
   const toast = useToast();
@@ -44,11 +46,23 @@ export const SignInCard = () => {
             "userInfo",
             JSON.stringify(authCheck?.data.result)
           );
-          setIsAuthen(true);
+          setUser({
+            isAuthen: true,
+            profileMode: {
+              mode: "myProfile",
+              userId: userInfo?.userId,
+            },
+          });
           navigate("/main");
         } else {
           console.log("Unsuccessfully authenticated");
-          setIsAuthen(false);
+          setUser({
+            isAuthen: false,
+            profileMode: {
+              mode: "myProfile",
+              userId: userInfo?.userId,
+            },
+          });
           localStorage.removeItem("token");
           navigate("/");
         }

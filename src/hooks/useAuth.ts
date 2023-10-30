@@ -1,6 +1,50 @@
 import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "../App";
+
+interface ICheckAuth {
+  setUser: (newUser: {
+    isAuthen: boolean;
+    profileMode: { mode: string; userId: any };
+  }) => void; // Use "void" instead of an empty function
+}
+
+export const checkAuthentication = async ({ setUser }: ICheckAuth) => {
+  const userInfoString = localStorage.getItem("userInfo");
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+
+  try {
+    const authCheck = await fetchAuthentication();
+
+    if (authCheck) {
+      console.log("Successfully authenticated");
+      setUser({
+        isAuthen: true,
+        profileMode: {
+          mode: "myProfile",
+          userId: userInfo?.userId,
+        },
+      });
+    } else {
+      console.log("Unsuccessfully authenticated");
+      setUser({
+        isAuthen: false,
+        profileMode: {
+          mode: "myProfile",
+          userId: userInfo?.userId,
+        },
+      });
+      localStorage.removeItem("token");
+    }
+  } catch (error) {
+    console.error("API error:", error);
+    setUser({
+      isAuthen: false,
+      profileMode: {
+        mode: "myProfile",
+        userId: userInfo?.userId,
+      },
+    });
+  }
+};
 
 export const fetchAuthentication = async () => {
   const token = localStorage.getItem("token");
@@ -23,25 +67,5 @@ export const fetchAuthentication = async () => {
     return response;
   } catch (error) {
     throw error;
-  }
-};
-
-export const checkAuthentication = async () => {
-  const { setIsAuthen } = useContext(AuthContext);
-
-  try {
-    const authCheck = await fetchAuthentication();
-
-    if (authCheck) {
-      console.log("Successfully authenticated");
-      setIsAuthen(true);
-    } else {
-      console.log("Unsuccessfully authenticated");
-      setIsAuthen(false);
-      localStorage.removeItem("token");
-    }
-  } catch (error) {
-    console.error("API error:", error);
-    setIsAuthen(false);
   }
 };

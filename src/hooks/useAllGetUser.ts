@@ -1,28 +1,26 @@
 import axios from "axios";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 
-export const useGetUserProfile = async (userId: number) => {
-  return useQuery("get-user-profile", await fetchUser(userId));
-};
+export const useGetUserProfile = () => {
+  return useMutation(async (userId: number) => {
+    try {
+      const data = {
+        userId: userId,
+      };
 
-const fetchUser = async (userId: number) => {
-  try {
-    const data = {
-      userId: userId,
-    };
+      const response = await axios.post("/user/profile", data, {
+        baseURL: import.meta.env.VITE_PUBLIC_BASE_URL,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    const response = await axios.post("/user/profile", data, {
-      baseURL: import.meta.env.VITE_PUBLIC_BASE_URL,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    throw new Error("Failed to fetch data");
-  }
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  });
 };
 
 export const useUpdateProfile = (values: { fname: string; lname: string }) => {

@@ -59,7 +59,8 @@ export const PostCard = ({
   const likePostMutation = useLikePost();
   const unLikePostMutation = useUnLikePost();
   const localISOString = dayjs(post?.updatedAt).format("MMM DD, YYYY · HH:mm");
-  const userInfo = JSON.parse(localStorage.getItem("userInfo") ?? "");
+  const userInfoString = localStorage.getItem("userInfo");
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
   const [toggleComment, setToggleComment] = useState<boolean>();
   const [commentData, setCommentData] = useState<any>({
     postId: post?.id,
@@ -97,6 +98,7 @@ export const PostCard = ({
       setCommentData({ postId: null, message: "" });
       refetchPostUser && refetchPostUser();
       refetchPostFollow && refetchPostFollow();
+      setToggleComment(false);
     }
   };
 
@@ -292,7 +294,9 @@ export const PostCard = ({
             )}
             {post?.commentPosts.length > 0 ? (
               <>
-                {post?.commentPosts.map((item: any) => renderCommentPost(item))}
+                {post?.commentPosts.map((item: any, idx: number) =>
+                  renderCommentPost(item, idx)
+                )}
               </>
             ) : null}
           </Stack>
@@ -302,11 +306,11 @@ export const PostCard = ({
   );
 };
 
-const renderCommentPost = (item: any) => {
+const renderCommentPost = (item: any, idx: number) => {
   // const localISOString = dayjs(item.updatedAt).format("MMM DD, YYYY · HH:mm");
 
   return (
-    <div className="tw-mt-2">
+    <div key={idx} className="tw-mt-2">
       <Box
         maxW="1000px"
         w="full"

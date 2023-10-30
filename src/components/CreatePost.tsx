@@ -20,16 +20,20 @@ import {
 } from "react-query";
 
 interface ICreatePost {
-  refetchPostUser: <TPageData>(
+  refetchPostUser?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<any, unknown>>;
-  refetchPostFollow: <TPageData>(
+  refetchPostFollow?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<any, unknown>>;
 }
 
-export const CreatePost = ({ refetchPostUser, refetchPostFollow }: ICreatePost) => {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo") ?? "");
+export const CreatePost = ({
+  refetchPostUser,
+  refetchPostFollow,
+}: ICreatePost) => {
+  const userInfoString = localStorage.getItem("userInfo");
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
   const [message, setMessage] = useState<string>("");
   const createPostMutation = useCreatePost();
 
@@ -37,8 +41,8 @@ export const CreatePost = ({ refetchPostUser, refetchPostFollow }: ICreatePost) 
     if (message) {
       await createPostMutation.mutateAsync(message);
       setMessage("");
-      refetchPostUser();
-      refetchPostFollow();
+      refetchPostUser && refetchPostUser();
+      refetchPostFollow && refetchPostFollow();
     }
   };
 
@@ -47,7 +51,12 @@ export const CreatePost = ({ refetchPostUser, refetchPostFollow }: ICreatePost) 
       <Card>
         <CardHeader>
           <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-            <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
+            <Avatar
+              name="userAvatar"
+              src={
+                "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+              }
+            />
             <Box>
               <Heading size="sm">
                 {userInfo?.firstName} {userInfo?.lastName}
