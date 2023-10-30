@@ -46,8 +46,8 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
     }
   };
 
-  console.log("post", post);
-  console.log("localISOString", localISOString);
+  // console.log("post", post);
+  // console.log("localISOString", localISOString);
 
   return (
     <>
@@ -77,7 +77,48 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
               <Text color={"gray.500"}>{post?.message}</Text>
             </div>
             <Stack mt={6} direction={"row"} spacing={4} align={"center"}>
-              <Button
+              {post?.likes.filter(
+                (item: any) => item.userId === userInfo.userId
+              ).length === 1 ? (
+                <>
+                  <Button
+                    size="sm"
+                    flex="1"
+                    variant="ghost"
+                    leftIcon={
+                      //   post?.likes.filter(
+                      //     (item: any) => item.userId === userInfo.userId
+                      //   ).length === 1 ? (
+                      <BiSolidLike />
+                      //   ) : (
+                      // <BiLike />
+                      //   )
+                    }
+                  >
+                    Like ({post?.likes.length})
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    size="sm"
+                    flex="1"
+                    variant="ghost"
+                    leftIcon={
+                      // post?.likes.filter(
+                      //   (item: any) => item.userId === userInfo.userId
+                      // ).length === 1 ? (
+                      //   <BiSolidLike />
+                      // ) : (
+                      <BiLike />
+                      // )
+                    }
+                  >
+                    Like ({post?.likes.length})
+                  </Button>
+                </>
+              )}
+              {/* <Button
                 size="sm"
                 flex="1"
                 variant="ghost"
@@ -92,7 +133,7 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
                 }
               >
                 Like
-              </Button>
+              </Button> */}
               <Button
                 size="sm"
                 flex="1"
@@ -100,7 +141,7 @@ export const PostCard = ({ post, refetchPost }: IPostCard) => {
                 leftIcon={<BiChat />}
                 onClick={() => setToggleComment(!toggleComment)}
               >
-                Comment
+                Comment ({post?.commentPosts.length})
               </Button>
             </Stack>
           </Stack>

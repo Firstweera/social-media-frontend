@@ -1,63 +1,38 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Home, MainFeed, ProfilePage, SignInCard, SignUpCard } from "./pages";
 import { Nav } from "./components";
-import { useEffect, useState } from "react";
-import { checkAuthentication } from "./hooks";
+import { Dispatch, createContext, useState } from "react";
+import ProtectedRoute from "./hooks/useProtectedRoute";
+import React from "react";
 
-const ProtectedRoute = ({
-  isAuthen,
-  redirectPath = "/",
-}: {
-  isAuthen: boolean;
-  redirectPath: string;
-}) => {
-  if (!isAuthen) {
-    return <Navigate to={redirectPath} replace />;
-  }
-
-  return <Outlet />;
-};
+export const AuthContext = createContext({
+  isAuthen: false,
+  setIsAuthen: (() => {}) as Dispatch<React.SetStateAction<boolean>>,
+});
 
 function App() {
   const queryClient = new QueryClient();
-  const [isAuthen, setIsAuthen] = useState(false);
-
-  useEffect(() => {
-    checkAuthentication(setIsAuthen);
-  }, []);
+  const [isAuthen, setIsAuthen] = useState<boolean>(false);
 
   return (
-    <>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <Nav isAuthen={isAuthen} />
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <AuthContext.Provider value={{ isAuthen, setIsAuthen }}>
+          <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<SignUpCard />} />
-            <Route
-              path="/login"
-              element={<SignInCard setIsAuthen={setIsAuthen} />}
-            />
-            <Route
-              element={
-                <ProtectedRoute isAuthen={isAuthen} redirectPath={"/"} />
-              }
-            >
+            <Route path="/login" element={<SignInCard />} />
+            <Route element={<ProtectedRoute />}>
               <Route path="/main" element={<MainFeed />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
             <Route path="*" element={<>404: Page not found</>} />
           </Routes>
-        </QueryClientProvider>
-      </BrowserRouter>
-    </>
+        </AuthContext.Provider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 

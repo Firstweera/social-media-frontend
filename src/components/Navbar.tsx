@@ -18,14 +18,19 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { SearchBar } from ".";
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
-interface INav {
-  isAuthen: boolean;
-}
+// interface INav {
+//   isAuthen: boolean;
+//   setIsAuthen: React.Dispatch<React.SetStateAction<boolean>>;
+// }
 
-export const Nav = ({ isAuthen }: INav) => {
+export const Nav = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
+  const { isAuthen, setIsAuthen } = useContext(AuthContext);
+
 
   return (
     <div className="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50">
@@ -136,8 +141,25 @@ export const Nav = ({ isAuthen }: INav) => {
                       <MenuItem>Account Settings</MenuItem>
                       <MenuItem
                         onClick={() => {
-                          localStorage.removeItem("token");
-                          localStorage.removeItem("userInfo");
+                          // Clear local storage
+                          window.localStorage.clear();
+
+                          // Clear session storage
+                          window.sessionStorage.clear();
+
+                          // Clear all cookies
+                          document.cookie.split(";").forEach(function (c) {
+                            document.cookie = c
+                              .replace(/^ +/, "")
+                              .replace(
+                                /=.*/,
+                                "=;expires=" +
+                                  new Date().toUTCString() +
+                                  ";path=/"
+                              );
+                          });
+
+                          setIsAuthen(false);
                           navigate("/");
                         }}
                       >

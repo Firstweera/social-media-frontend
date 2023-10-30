@@ -24,20 +24,20 @@ export const fetchAuthentication = async () => {
   }
 };
 
-export async function checkAuthentication(setIsAuthenticated: (arg0: boolean) => void) {
+export async function checkAuthentication(setIsAuthen: (arg0: boolean) => void) {
   try {
     const authCheck = await fetchAuthentication();
 
     if (authCheck) {
       console.log("Successfully authenticated");
-      setIsAuthenticated(true);
+      setIsAuthen(true);
     } else {
       console.log("Unsuccessfully authenticated");
-      setIsAuthenticated(false);
+      setIsAuthen(false);
       localStorage.removeItem("token");
     }
   } catch (error) {
     console.error("API error:", error);
-    setIsAuthenticated(false);
+    setIsAuthen(false);
   }
 }

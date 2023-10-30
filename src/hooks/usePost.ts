@@ -44,6 +44,21 @@ const fetchPosts = async () => {
   }
 };
 
+// export const useUpdatePost = () => {
+//   return useMutation(async () => {
+//     try {
+//       const data = {
+//         postId : 0,
+//         message : ""
+//       }
+
+//       const response = await axios.post()
+//     } catch (error) {
+//       throw error
+//     }
+//   })
+// }
+
 export const useCreateComment = () => {
   return useMutation(async (values: { postId: number; message: string }) => {
     try {

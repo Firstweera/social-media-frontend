@@ -16,12 +16,15 @@ import { fetchAuthentication, useSignIn } from "../hooks";
 import { ILoginData } from "../interfaces";
 import { Formik, Form, Field } from "formik";
 import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
-interface ILoginPage {
-  setIsAuthen: React.Dispatch<React.SetStateAction<boolean>>;
-}
+// interface ILoginPage {
+//   setIsAuthen: React.Dispatch<React.SetStateAction<boolean>>;
+// }
 
-export const SignInCard = ({ setIsAuthen }: ILoginPage) => {
+export const SignInCard = () => {
+  const { setIsAuthen } = useContext(AuthContext);
   const signInMutation = useSignIn();
   const navigate = useNavigate();
   const toast = useToast();
