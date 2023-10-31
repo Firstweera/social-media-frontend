@@ -24,7 +24,7 @@ export const UserCard = ({ dataProfile, mode }: IUserCard) => {
         maxW={"500px"}
         w={"full"}
         bg={useColorModeValue("white", "gray.800")}
-        boxShadow={"2xl"}
+        boxShadow={"xl"}
         rounded={"md"}
         overflow={"hidden"}
       >
