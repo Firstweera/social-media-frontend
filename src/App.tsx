@@ -45,6 +45,8 @@ function App() {
   const queryClient = new QueryClient();
 
   useEffect(() => {
+    console.log("user auth", user?.isAuthen);
+    
     checkAuthentication({ setUser });
   }, []);
 

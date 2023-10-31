@@ -47,12 +47,16 @@ interface IPostCard {
   refetchPostFollow?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<any, unknown>>;
+  refetchPostUserId?: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<any, unknown>>;
 }
 
 export const PostCard = ({
   post,
   refetchPostUser,
   refetchPostFollow,
+  refetchPostUserId,
 }: IPostCard) => {
   const createCommentMutation = useCreateComment();
   const updatePostMutation = useUpdatePost();
@@ -95,9 +99,10 @@ export const PostCard = ({
   const handleCreateComment = async () => {
     if (commentData) {
       await createCommentMutation.mutateAsync(commentData);
-      setCommentData({ postId: null, message: "" });
+      setCommentData({ postId: commentData?.postId, message: "" });
       refetchPostUser && refetchPostUser();
       refetchPostFollow && refetchPostFollow();
+      refetchPostUserId && refetchPostUserId();
       setToggleComment(false);
     }
   };
@@ -110,6 +115,7 @@ export const PostCard = ({
         if (result.status === "ok") {
           refetchPostUser && refetchPostUser();
           refetchPostFollow && refetchPostFollow();
+          refetchPostUserId && refetchPostUserId();
           // setTimeout(() => {
           //   setLoadingLike(false);
           // }, 500);
@@ -118,6 +124,7 @@ export const PostCard = ({
       } else if (type === "unLike") {
         const result = await unLikePostMutation.mutateAsync({ postId });
         if (result.status === "ok") {
+          refetchPostUserId && refetchPostUserId();
           refetchPostUser && refetchPostUser();
           refetchPostFollow && refetchPostFollow();
           // setTimeout(() => {

@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
+import { Box, Text } from "@chakra-ui/react";
 
 interface ISearchResult {
   id: number;
@@ -17,6 +18,7 @@ export const SearchBar: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [results, setResults] = useState<ISearchResult[]>([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const onValueChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -56,7 +58,7 @@ export const SearchBar: React.FC = () => {
     console.log("Selected Result:", selectedResult);
 
     setUser({
-      isAuthen: true,
+      isAuthen: !!token,
       profileMode: {
         mode: "friendProfile",
         userId: selectedResult?.id,
@@ -65,9 +67,9 @@ export const SearchBar: React.FC = () => {
     navigate("/profile");
   };
 
-  const renderResult = (friend: ISearchResult) => {
-    return <SearchResult friend={friend} />;
-  };
+  // const renderResult = (friend: ISearchResult) => {
+  //   return <SearchResult friend={friend} />;
+  // };
 
   useEffect(() => {
     console.log("results", results);
@@ -75,17 +77,15 @@ export const SearchBar: React.FC = () => {
 
   return (
     <>
-      <div className="tw-fixed tw-top-3">
-        <Search
-          placeholder="Search friend..."
-          value={value}
-          isLoading={isLoading}
-          onSearchChange={onValueChange}
-          searchResults={results}
-          onResultSelect={handleResultSelect}
-          resultRenderer={renderResult}
-        />
-      </div>
+      <Search
+        placeholder="Search friend..."
+        value={value}
+        isLoading={isLoading}
+        onSearchChange={onValueChange}
+        searchResults={results}
+        onResultSelect={handleResultSelect}
+        resultRenderer={(friend) => <SearchResult friend={friend} />}
+      />
     </>
   );
 };
@@ -96,10 +96,10 @@ type SearchResultProps = {
 
 const SearchResult: React.FC<SearchResultProps> = ({ friend }) => {
   return (
-    <div key={friend?.id}>
-      <p>
+    <Box key={friend?.id}>
+      <Text>
         {friend.fname} {friend.lname}
-      </p>
-    </div>
+      </Text>
+    </Box>
   );
 };

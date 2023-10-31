@@ -65,6 +65,40 @@ const fetchPostsUser = async () => {
   }
 };
 
+export const useGetPostsUserId = (userId: number | null) => {
+  return useQuery(
+    ["get-all-post-userId", userId],
+    async () => {
+      if (userId !== null) {
+        return await fetchPostsUserId(userId);
+      }
+      return null;
+    },
+    {
+      enabled: userId !== null,
+    }
+  );
+};
+
+const fetchPostsUserId = async (userId: number) => {
+  try {
+    const data = {
+      userId: userId,
+    };
+    const response = await axios.post("/post/getByUserId", data, {
+      baseURL: import.meta.env.VITE_PUBLIC_BASE_URL,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch data");
+  }
+};
+
 export const useUpdatePost = () => {
   return useMutation(async (value: { postId: number; message: string }) => {
     try {

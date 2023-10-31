@@ -4,3 +4,4 @@ export * from "./CreatePost";
 export * from "./SearchBar";
 export * from "./ModalWarning";
 export * from "./userCard";
+export * from "./PopOverEditProfile";

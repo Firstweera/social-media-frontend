@@ -25,12 +25,12 @@ export const MainFeed = () => {
     allPost = [...allPost, ...allPostFollow.data];
   }
 
-  console.log("allPostUser", allPostUser);
-  console.log("allPostFollow", allPostFollow);
-  console.log(
-    "allPost",
-    allPost.sort((a, b) => a.updatedAt - b.updatedAt)
-  );
+  // console.log("allPostUser", allPostUser);
+  // console.log("allPostFollow", allPostFollow);
+  // console.log(
+  //   "allPost",
+  //   allPost.sort((a, b) => a.updatedAt - b.updatedAt)
+  // );
 
   return (
     <Box mt={20} p={5} w="full" maxW="10/12" mx="auto">

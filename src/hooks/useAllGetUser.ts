@@ -23,8 +23,8 @@ export const useGetUserProfile = () => {
   });
 };
 
-export const useUpdateProfile = (values: { fname: string; lname: string }) => {
-  return useMutation(async () => {
+export const useUpdateProfile = () => {
+  return useMutation(async (values: { fname: string; lname: string }) => {
     try {
       const data = {
         fname: values?.fname, // optional
@@ -39,6 +39,28 @@ export const useUpdateProfile = (values: { fname: string; lname: string }) => {
         },
       });
 
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  });
+};
+
+export const useFollowUser = () => {
+  return useMutation(async (values: { friendId: number }) => {
+    try {
+      const data = {
+        friendId: values?.friendId,
+      };
+
+      const response = await axios.post("/user/follow", data, {
+        baseURL: import.meta.env.VITE_PUBLIC_BASE_URL,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
       return response.data;
     } catch (error) {
       throw error;
@@ -46,3 +68,24 @@ export const useUpdateProfile = (values: { fname: string; lname: string }) => {
   });
 };
 
+export const useUnFollowUser = () => {
+  return useMutation(async (values: { friendId: number }) => {
+    try {
+      const data = {
+        friendId: values?.friendId,
+      };
+
+      const response = await axios.post("/user/unfollow", data, {
+        baseURL: import.meta.env.VITE_PUBLIC_BASE_URL,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  });
+};
