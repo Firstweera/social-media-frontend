@@ -92,6 +92,7 @@ export const SignUpCard = () => {
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
+      mt={5}
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Heading fontSize={"4xl"} textAlign={"center"}>

@@ -31,7 +31,7 @@ export const Nav = () => {
     <Box
       bg={useColorModeValue("gray.100", "gray.900")}
       px={4}
-      mb={5}
+      mb={10}
       pos={"fixed"}
       top={0}
       left={0}
@@ -42,7 +42,7 @@ export const Nav = () => {
         h={16}
         alignItems="center"
         justifyContent="space-between"
-        // position={"relative"}
+        position={"relative"}
       >
         <Link to={user?.isAuthen ? "/main" : "/"}>
           <Box>Social-Media</Box>
@@ -53,14 +53,18 @@ export const Nav = () => {
             maxW="sm"
             mt={3}
             zIndex={40}
-            // left={44}
-            // pos={"fixed"}
+            // insetY={20}
+            inset={0}
+            // right={0}
+            left={{ base: "36", sm: "48", md: "56", lg: "72" }}
+            pos={"absolute"}
             width={[
-              "15%", // 62em+
-              "25%", // 48em-62em
-              "50%", // 30em-48em
-              "100%", // 0-30em
+              "30%", // 62em+
+              "50%", // 48em-62em
+              // "50%", // 30em-48em
+              // "60%", // 0-30em
             ]}
+            // className="tw-border-2 tw-border-green-400 tw-left-"
           >
             <SearchBar />
           </Box>
@@ -70,65 +74,83 @@ export const Nav = () => {
           <Stack direction="row" spacing={7}>
             {!user?.isAuthen ? (
               <>
-                <Link to="/login">
-                  <Button fontSize="sm" fontWeight={400} variant="link" mt={3}>
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button
-                    // display={{ base: "none", md: "inline-flex" }}
-                    fontSize="sm"
-                    fontWeight={600}
-                    color="white"
-                    bg="blue.400"
-                    _hover={{
-                      bg: "blue.500",
-                    }}
-                  >
-                    Sign Up
-                  </Button>
-                </Link>
+                <Button
+                  as={"a"}
+                  fontSize="sm"
+                  fontWeight={400}
+                  variant="link"
+                  href="/about"
+                >
+                  About
+                </Button>
+
+                <Button
+                  as={"a"}
+                  fontSize="sm"
+                  fontWeight={400}
+                  variant="link"
+                  href="/login"
+                >
+                  Sign In
+                </Button>
+
+                <Button
+                  // display={{ base: "none", md: "inline-flex" }}
+                  as={"a"}
+                  fontSize="sm"
+                  fontWeight={600}
+                  color="white"
+                  bg="blue.400"
+                  _hover={{
+                    bg: "blue.500",
+                  }}
+                  href="/register"
+                >
+                  Sign Up
+                </Button>
               </>
             ) : (
               <>
-                <Link to="/profile">
-                  <Button
-                    fontSize="lg"
-                    fontWeight={600}
-                    variant="link"
-                    display={{ base: "none", md: "inline-flex" }}
-                    mt={2}
-                    onClick={() => {
-                      setUser({
-                        isAuthen: !!token,
-                        profileMode: {
-                          mode: "myProfile",
-                          userId: userInfo?.userId,
-                        },
-                      });
-                    }}
-                  >
-                    Profile
+                <Stack direction="row" spacing={7}>
+                  <Box display={{ base: "none", md: "none", lg: "block" }}>
+                    <Button
+                      as={"a"}
+                      fontSize="lg"
+                      fontWeight={600}
+                      variant="link"
+                      display={{ base: "none", md: "inline-flex" }}
+                      mt={2}
+                      onClick={() => {
+                        setUser({
+                          isAuthen: !!token,
+                          profileMode: {
+                            mode: "myProfile",
+                            userId: userInfo?.userId,
+                          },
+                        });
+                      }}
+                      href="/profile"
+                    >
+                      Profile
+                    </Button>
+
+                    <Button
+                      as={"a"}
+                      fontSize="lg"
+                      fontWeight={600}
+                      variant="link"
+                      mt={2}
+                      display={{ base: "none", md: "inline-flex" }}
+                      href="/main"
+                    >
+                      Main
+                    </Button>
+                  </Box>
+
+                  <Button onClick={toggleColorMode} display={"inline-flex"}>
+                    {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
                   </Button>
-                </Link>
-                <Link to="/main">
-                  <Button
-                    fontSize="lg"
-                    fontWeight={600}
-                    variant="link"
-                    mt={2}
-                    display={{ base: "none", md: "inline-flex" }}
-                  >
-                    Main
-                  </Button>
-                </Link>
-                <Button
-                  onClick={toggleColorMode}
-                  display={{ base: "none", md: "inline-flex" }}
-                >
-                  {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-                </Button>
+                </Stack>
               </>
             )}
 
@@ -163,6 +185,36 @@ export const Nav = () => {
                     </Text>
                   </Flex>
                   <MenuDivider />
+                  <Box display={["block", "block", "none"]}>
+                    <MenuItem
+                      onClick={() => {
+                        setUser({
+                          isAuthen: !!token,
+                          profileMode: {
+                            mode: "myProfile",
+                            userId: userInfo?.userId || 0,
+                          },
+                        });
+                        navigate("/profile");
+                      }}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setUser({
+                          isAuthen: !!token,
+                          profileMode: {
+                            mode: "myProfile",
+                            userId: userInfo?.userId || 0,
+                          },
+                        });
+                        navigate("/main");
+                      }}
+                    >
+                      Main
+                    </MenuItem>
+                  </Box>
                   <MenuItem
                     onClick={() => {
                       setUser({
@@ -175,23 +227,8 @@ export const Nav = () => {
                       navigate("/profile");
                     }}
                   >
-                    Profile
+                    Account Settings
                   </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      setUser({
-                        isAuthen: !!token,
-                        profileMode: {
-                          mode: "myProfile",
-                          userId: userInfo?.userId || 0,
-                        },
-                      });
-                      navigate("/main");
-                    }}
-                  >
-                    Main
-                  </MenuItem>
-                  <MenuItem>Account Settings</MenuItem>
                   <MenuItem
                     onClick={() => {
                       // Clear local storage

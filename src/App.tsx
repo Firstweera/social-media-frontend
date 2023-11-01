@@ -7,11 +7,18 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Home, MainFeed, ProfilePage, SignInCard, SignUpCard } from "./pages";
+import {
+  About,
+  Friends,
+  Home,
+  MainFeed,
+  ProfilePage,
+  SignInCard,
+  SignUpCard,
+} from "./pages";
 import { Nav } from "./components";
 import { checkAuthentication } from "./hooks";
 
-// Create a UserContext with default values
 export const UserContext = createContext({
   user: {
     isAuthen: false,
@@ -23,11 +30,10 @@ export const UserContext = createContext({
   setUser: (_newUser: {
     isAuthen: boolean;
     profileMode: { mode: string; userId: any };
-  }) => {}, // Default function with the correct argument
+  }) => {}, 
 });
 
 function App() {
-  // Initialize user state
   const [user, setUser] = useState(() => {
     const token = localStorage.getItem("token");
     const userInfoString = localStorage.getItem("userInfo");
@@ -41,12 +47,11 @@ function App() {
     };
   });
 
-  // Initialize Query Client
   const queryClient = new QueryClient();
 
   useEffect(() => {
-    console.log("user auth", user?.isAuthen);
-    
+    // console.log("user auth", user?.isAuthen);
+
     checkAuthentication({ setUser });
   }, []);
 
@@ -59,9 +64,11 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<SignUpCard />} />
             <Route path="/login" element={<SignInCard />} />
+            <Route path="/about" element={<About />} />
             <Route element={<ProtectedRoute user={user} redirectPath="/" />}>
               <Route path="/main" element={<MainFeed />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/friends" element={<Friends />} />
             </Route>
             <Route path="*" element={<>404: Page not found</>} />
           </Routes>
@@ -73,7 +80,6 @@ function App() {
 
 export default App;
 
-// ProtectedRoute component with destructured props
 const ProtectedRoute = ({
   user,
   redirectPath,

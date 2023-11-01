@@ -40,6 +40,7 @@ export const SearchBar: React.FC = () => {
         );
 
         setResults(response.data.data as ISearchResult[]);
+        setValue("")
       } else {
         setResults([]);
       }

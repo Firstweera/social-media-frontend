@@ -48,18 +48,22 @@ export const Home = () => {
           </Text>
           <Stack direction={"row"}>
             <Button
+              as={"a"}
               bg={"blue.400"}
               rounded={"full"}
               color={"white"}
               _hover={{ bg: "blue.500" }}
+              href="/register"
             >
               Get started
             </Button>
             <Button
+              as={"a"}
               bg={"whiteAlpha.300"}
               rounded={"full"}
               color={"white"}
               _hover={{ bg: "whiteAlpha.500" }}
+              href="/about"
             >
               Learn more
             </Button>
