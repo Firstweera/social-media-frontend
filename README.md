@@ -19,5 +19,10 @@ To use this project:
 
 1. Clone or download this repository to your local development environment.
 2. Install the necessary dependencies using your preferred package manager.
+
+```shell
+yarn install
+```
+
 3. Customize the components and pages to fit your project's requirements.
 4. Build upon this foundation to create a unique social media frontend.
