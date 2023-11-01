@@ -52,6 +52,9 @@ export const PopoverForm = ({ dataProfile }: IPopoverForm) => {
 
       if (data?.status === "ok") {
         // console.log("test");
+        userInfo.firstName = values?.fname;
+        userInfo.lastName = values?.lname;
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
         toast({
           title: "Update username success!",
           status: "success",
