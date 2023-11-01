@@ -41,10 +41,15 @@ export const Home = () => {
             color={"white"}
             fontWeight={700}
             lineHeight={1.2}
-            fontSize={useBreakpointValue({ base: "3xl", md: "4xl" })}
+            fontSize={useBreakpointValue({ base: "xl", md: "2xl" })}
           >
-            Lorem ipsum dolor sit amet consectetur adipiscing elit sed do
-            eiusmod tempor
+            Welcome to the Social Media!
+          </Text>
+          <Text color={"white"} fontWeight={400} lineHeight={1.2}>
+            Explore a world of connections, interactions, and shared
+            experiences. Our platform offers seamless user management, secure
+            authentication, and much more. Join us and be part of a vibrant
+            online community.
           </Text>
           <Stack direction={"row"}>
             <Button
