@@ -1,27 +1,23 @@
-# React + TypeScript + Vite
+# Frontend Social Media with Login, Register, and Private Routes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Technology Stack
 
-Currently, two official plugins are available:
+- **TypeScript 5.0.2**: A typed superset of JavaScript for enhanced development.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Frameworks and Libraries
 
-## Expanding the ESLint configuration
+- **React / Vite 18.2 / 4.4.5**: A powerful combination for building user interfaces.
+- **React Router 6.17**: For handling navigation and private routes.
+- **Axios 1.6**: A promise-based HTTP client for making API requests.
+- **JSON Web Tokens (JWT)**: A standard for securing and authenticating web requests.
+- **TailwindCSS 3.3.5**: A utility-first CSS framework.
+- **Chakra UI 2.8.1**: A set of accessible and composable components.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Usage
 
-- Configure the top-level `parserOptions` property like this:
+To use this project:
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. Clone or download this repository to your local development environment.
+2. Install the necessary dependencies using your preferred package manager.
+3. Customize the components and pages to fit your project's requirements.
+4. Build upon this foundation to create a unique social media frontend.
