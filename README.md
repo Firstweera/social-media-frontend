@@ -1,4 +1,6 @@
-# Frontend Social Media with Login, Register, and Private Routes
+## Frontend Social Media with Login, Register, and Private Routes
+
+"Welcome to the Social Media Frontend, the user interface for a feature-rich social media application. Our frontend provides a seamless experience with user authentication, registration, and secure private routes."
 
 ## Technology Stack
 
