@@ -113,38 +113,40 @@ export const Nav = () => {
               <>
                 <Stack direction="row" spacing={7}>
                   <Box display={{ base: "none", md: "none", lg: "block" }}>
-                    <Button
-                      as={"a"}
-                      fontSize="lg"
-                      fontWeight={600}
-                      variant="link"
-                      display={{ base: "none", md: "inline-flex" }}
-                      mt={2}
-                      onClick={() => {
-                        setUser({
-                          isAuthen: !!token,
-                          profileMode: {
-                            mode: "myProfile",
-                            userId: userInfo?.userId,
-                          },
-                        });
-                      }}
-                      href="/profile"
-                    >
-                      Profile
-                    </Button>
+                    <Stack direction="row" spacing={7}>
+                      <Button
+                        as={"a"}
+                        fontSize="lg"
+                        fontWeight={600}
+                        variant="link"
+                        display={{ base: "none", md: "inline-flex" }}
+                        mt={2}
+                        onClick={() => {
+                          setUser({
+                            isAuthen: !!token,
+                            profileMode: {
+                              mode: "myProfile",
+                              userId: userInfo?.userId,
+                            },
+                          });
+                        }}
+                        href="/profile"
+                      >
+                        Profile
+                      </Button>
 
-                    <Button
-                      as={"a"}
-                      fontSize="lg"
-                      fontWeight={600}
-                      variant="link"
-                      mt={2}
-                      display={{ base: "none", md: "inline-flex" }}
-                      href="/main"
-                    >
-                      Main
-                    </Button>
+                      <Button
+                        as={"a"}
+                        fontSize="lg"
+                        fontWeight={600}
+                        variant="link"
+                        mt={2}
+                        display={{ base: "none", md: "inline-flex" }}
+                        href="/main"
+                      >
+                        Main
+                      </Button>
+                    </Stack>
                   </Box>
 
                   <Button onClick={toggleColorMode} display={"inline-flex"}>
