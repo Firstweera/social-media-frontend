@@ -30,8 +30,8 @@ export const ProfilePage = () => {
   const unFollowUserMutation = useUnFollowUser();
   const [reloadData, setReloadData] = useState<Boolean>(false);
 
-  console.log("userInfo", userInfo);
-  console.log("user", user);
+  // console.log("userInfo", userInfo);
+  // console.log("user", user);
 
   const fetchData = async (userId: number) => {
     try {

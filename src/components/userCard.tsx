@@ -23,7 +23,7 @@ export const UserCard = ({
   handleFollowUser,
   setReloadData,
 }: IUserCard) => {
-  console.log("dataProfile", dataProfile);
+  // console.log("dataProfile", dataProfile);
   const userInfoString = localStorage.getItem("userInfo");
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
   function formatDataLength(num: number) {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Search } from "chakra-ui-search";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
@@ -56,7 +56,7 @@ export const SearchBar: React.FC = () => {
     id: number;
     lname: string;
   }) => {
-    console.log("Selected Result:", selectedResult);
+    // console.log("Selected Result:", selectedResult);
 
     setUser({
       isAuthen: !!token,
@@ -72,9 +72,9 @@ export const SearchBar: React.FC = () => {
   //   return <SearchResult friend={friend} />;
   // };
 
-  useEffect(() => {
-    console.log("results", results);
-  }, [results]);
+  // useEffect(() => {
+  //   console.log("results", results);
+  // }, [results]);
 
   return (
     <>

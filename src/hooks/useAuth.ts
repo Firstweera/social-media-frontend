@@ -15,7 +15,7 @@ export const checkAuthentication = async ({ setUser }: ICheckAuth) => {
     const authCheck = await fetchAuthentication();
 
     if (authCheck) {
-      console.log("Successfully authenticated");
+      // console.log("Successfully authenticated");
       setUser({
         isAuthen: true,
         profileMode: {
@@ -24,7 +24,7 @@ export const checkAuthentication = async ({ setUser }: ICheckAuth) => {
         },
       });
     } else {
-      console.log("Unsuccessfully authenticated");
+      // console.log("Unsuccessfully authenticated");
       setUser({
         isAuthen: false,
         profileMode: {

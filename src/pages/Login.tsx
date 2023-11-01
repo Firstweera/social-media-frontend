@@ -55,7 +55,7 @@ export const SignInCard = () => {
           });
           navigate("/main");
         } else {
-          console.log("Unsuccessfully authenticated");
+          // console.log("Unsuccessfully authenticated");
           setUser({
             isAuthen: false,
             profileMode: {
