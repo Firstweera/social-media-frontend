@@ -29,6 +29,3 @@ dist-ssr
 
 # vercel
 .vercel
-
-# typescript
-vite-env.d.ts
