@@ -75,28 +75,28 @@ export const Nav = () => {
             {!user?.isAuthen ? (
               <>
                 <Button
-                  as={"a"}
+                  // as={"a"}
                   fontSize="sm"
                   fontWeight={400}
                   variant="link"
-                  href="/about"
+                  // href="/about"
                 >
-                  About
+                  <Link to={"/about"}>About</Link>
                 </Button>
 
                 <Button
-                  as={"a"}
+                  // as={"a"}
                   fontSize="sm"
                   fontWeight={400}
                   variant="link"
-                  href="/login"
+                  // href="/login"
                 >
-                  Sign In
+                  <Link to={"/login"}>Sign In</Link>
                 </Button>
 
                 <Button
                   // display={{ base: "none", md: "inline-flex" }}
-                  as={"a"}
+                  // as={"a"}
                   fontSize="sm"
                   fontWeight={600}
                   color="white"
@@ -104,9 +104,9 @@ export const Nav = () => {
                   _hover={{
                     bg: "blue.500",
                   }}
-                  href="/register"
+                  // href="/register"
                 >
-                  Sign Up
+                  <Link to={"/register"}>Sign Up</Link>
                 </Button>
               </>
             ) : (
