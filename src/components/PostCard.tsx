@@ -119,7 +119,7 @@ export const PostCard = ({
           // setTimeout(() => {
           //   setLoadingLike(false);
           // }, 500);
-          console.log("Liked post:", result);
+          // console.log("Liked post:", result);
         }
       } else if (type === "unLike") {
         const result = await unLikePostMutation.mutateAsync({ postId });
@@ -130,7 +130,7 @@ export const PostCard = ({
           // setTimeout(() => {
           //   setLoadingLike(false);
           // }, 500);
-          console.log("UnLiked post:", result);
+          // console.log("UnLiked post:", result);
         }
       }
     } catch (error) {
